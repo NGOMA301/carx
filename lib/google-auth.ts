@@ -1,87 +1,49 @@
-"use client"
+"use client";
 
 declare global {
   interface Window {
-    google: any
+    google: any;
   }
 }
 
-export const initializeGoogleAuth = () => {
+// Load the GSI script
+export const initializeGoogleAuth = (): Promise<void> => {
   return new Promise((resolve, reject) => {
-    if (typeof window === "undefined") {
-      reject("Window is undefined")
-      return
+    if (typeof window === "undefined") return reject("Window is undefined");
+
+    if (document.querySelector("script[src='https://accounts.google.com/gsi/client']")) {
+      return resolve();
     }
 
-    // Load Google Identity Services script
-    const script = document.createElement("script")
-    script.src = "https://accounts.google.com/gsi/client"
-    script.async = true
-    script.defer = true
-    script.onload = () => {
-      if (window.google) {
-        window.google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-          callback: resolve,
-        })
-      }
-    }
-    script.onerror = reject
-    document.head.appendChild(script)
-  })
-}
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject("Failed to load Google SDK");
+    document.head.appendChild(script);
+  });
+};
 
+// Returns access token from Google (to send to backend)
 export const signInWithGoogle = (): Promise<string> => {
   return new Promise((resolve, reject) => {
-    if (!window.google) {
-      reject("Google SDK not loaded")
-      return
+    if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
+      return reject("Google SDK not loaded");
     }
 
-    window.google.accounts.id.prompt((notification: any) => {
-      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        // Try alternative sign-in method
-        window.google.accounts.oauth2
-          .initTokenClient({
-            client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-            scope: "email profile",
-            callback: (response: any) => {
-              if (response.access_token) {
-                resolve(response.access_token)
-              } else {
-                reject("Failed to get access token")
-              }
-            },
-          })
-          .requestAccessToken()
-      }
-    })
-
-    // Set up credential callback
-    window.google.accounts.id.initialize({
-      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    const client = window.google.accounts.oauth2.initTokenClient({
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+      scope: "openid email profile",
       callback: (response: any) => {
-        if (response.credential) {
-          // Decode JWT to get access token
-          fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${response.credential}`)
-            .then((res) => res.json())
-            .then((data) => {
-              // Get access token for API calls
-              window.google.accounts.oauth2
-                .initTokenClient({
-                  client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-                  scope: "email profile",
-                  callback: (tokenResponse: any) => {
-                    resolve(tokenResponse.access_token)
-                  },
-                })
-                .requestAccessToken()
-            })
-            .catch(reject)
+        if (response.access_token) {
+          resolve(response.access_token);
         } else {
-          reject("No credential received")
+          reject("Failed to get access token");
         }
       },
-    })
-  })
-}
+    });
+
+    client.requestAccessToken();
+  });
+};

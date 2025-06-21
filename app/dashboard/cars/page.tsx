@@ -1,21 +1,14 @@
-"use client";
+"use client"
 
-import type React from "react";
-
-import { useState, useEffect } from "react";
-import { DashboardLayout } from "@/components/dashboard-layout";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { LoadingOverlay, LoadingSpinner } from "@/components/loading-spinner";
+import type React from "react"
+import { useState, useEffect } from "react"
+import { DashboardLayout } from "@/components/dashboard-layout"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { LoadingOverlay, LoadingSpinner } from "@/components/loading-spinner"
 import {
   Dialog,
   DialogContent,
@@ -23,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,32 +27,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Car, Plus, Edit, Trash2, Phone, User, RefreshCw } from "lucide-react";
-import axios from "axios";
-import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
-import { generateRwandanPlateNumber } from "@/utils/plate-generator";
-import Footer from "@/components/footer";
-import { AuthGuard } from "@/components/auth-guard";
+} from "@/components/ui/alert-dialog"
+import { Car, Plus, Edit, Trash2, Phone, User, RefreshCw } from "lucide-react"
+import axios from "axios"
+import { useToast } from "@/hooks/use-toast"
+import Image from "next/image"
+import { generateRwandanPlateNumber } from "@/utils/plate-generator"
+import { AuthGuard } from "@/components/auth-guard"
 
 interface CarData {
-  _id: string;
-  plateNumber: string;
-  carType: string;
-  carSize: string;
-  driverName: string;
-  phoneNumber: string;
-  image?: string;
-  createdAt: string;
+  _id: string
+  plateNumber: string
+  carType: string
+  carSize: string
+  driverName: string
+  phoneNumber: string
+  image?: string
+  createdAt: string
 }
 
 export default function CarsPage() {
-  const [cars, setCars] = useState<CarData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingCar, setEditingCar] = useState<CarData | null>(null);
+  const [cars, setCars] = useState<CarData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingCar, setEditingCar] = useState<CarData | null>(null)
   const [formData, setFormData] = useState({
     plateNumber: "",
     carType: "",
@@ -67,92 +59,92 @@ export default function CarsPage() {
     driverName: "",
     phoneNumber: "",
     image: null as File | null,
-  });
-  const { toast } = useToast();
+  })
+  const { toast } = useToast()
 
   useEffect(() => {
-    fetchCars();
-  }, []);
+    fetchCars()
+  }, [])
 
   const fetchCars = async () => {
     try {
-      setLoading(true);
-      const response = await axios.get("/car");
-      setCars(response.data);
+      setLoading(true)
+      const response = await axios.get("/car")
+      setCars(response.data)
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to fetch cars",
         variant: "destructive",
-      });
+      })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setActionLoading(true);
+    e.preventDefault()
+    setActionLoading(true)
 
     try {
-      const data = new FormData();
+      const data = new FormData()
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== null) {
-          data.append(key, value);
+          data.append(key, value)
         }
-      });
+      })
 
       if (editingCar) {
         await axios.put(`/car/${editingCar._id}`, data, {
           headers: { "Content-Type": "multipart/form-data" },
-        });
+        })
         toast({
           title: "Success",
           description: "Car updated successfully",
-        });
+        })
       } else {
         await axios.post("/car", data, {
           headers: { "Content-Type": "multipart/form-data" },
-        });
+        })
         toast({
           title: "Success",
           description: "Car added successfully",
-        });
+        })
       }
 
-      setDialogOpen(false);
-      resetForm();
-      fetchCars();
+      setDialogOpen(false)
+      resetForm()
+      fetchCars()
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to save car",
         variant: "destructive",
-      });
+      })
     } finally {
-      setActionLoading(false);
+      setActionLoading(false)
     }
-  };
+  }
 
   const handleDelete = async (carId: string) => {
-    setActionLoading(true);
+    setActionLoading(true)
     try {
-      await axios.delete(`/car/${carId}`);
+      await axios.delete(`/car/${carId}`)
       toast({
         title: "Success",
         description: "Car deleted successfully",
-      });
-      fetchCars();
+      })
+      fetchCars()
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to delete car",
         variant: "destructive",
-      });
+      })
     } finally {
-      setActionLoading(false);
+      setActionLoading(false)
     }
-  };
+  }
 
   const resetForm = () => {
     setFormData({
@@ -162,12 +154,12 @@ export default function CarsPage() {
       driverName: "",
       phoneNumber: "",
       image: null,
-    });
-    setEditingCar(null);
-  };
+    })
+    setEditingCar(null)
+  }
 
   const openEditDialog = (car: CarData) => {
-    setEditingCar(car);
+    setEditingCar(car)
     setFormData({
       plateNumber: car.plateNumber,
       carType: car.carType,
@@ -175,9 +167,9 @@ export default function CarsPage() {
       driverName: car.driverName,
       phoneNumber: car.phoneNumber,
       image: null,
-    });
-    setDialogOpen(true);
-  };
+    })
+    setDialogOpen(true)
+  }
 
   return (
     <AuthGuard requireAuth>
@@ -185,17 +177,13 @@ export default function CarsPage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Cars Management
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300 mt-2">
-                Manage your registered vehicles
-              </p>
+              <h1 className="text-3xl font-bold text-black dark:text-white">Cars Management</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">Manage your registered vehicles</p>
             </div>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button
-                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                  className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black"
                   onClick={resetForm}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -204,43 +192,32 @@ export default function CarsPage() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>
-                    {editingCar ? "Edit Car" : "Add New Car"}
-                  </DialogTitle>
+                  <DialogTitle>{editingCar ? "Edit Car" : "Add New Car"}</DialogTitle>
                   <DialogDescription>
-                    {editingCar
-                      ? "Update car information"
-                      : "Add a new car to your fleet"}
+                    {editingCar ? "Update car information" : "Add a new car to your fleet"}
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="plateNumber">Plate Number</Label>
+                    <Label htmlFor="plateNumber" className="text-sm text-gray-700 dark:text-gray-300">
+                      Plate Number
+                    </Label>
                     <div className="flex space-x-2">
                       <Input
                         id="plateNumber"
                         value={formData.plateNumber}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            plateNumber: e.target.value,
-                          })
-                        }
+                        onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value })}
                         required
                         disabled={actionLoading}
-                        className="flex-1"
+                        className="flex-1 border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black"
                       />
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() =>
-                          setFormData({
-                            ...formData,
-                            plateNumber: generateRwandanPlateNumber(),
-                          })
-                        }
+                        onClick={() => setFormData({ ...formData, plateNumber: generateRwandanPlateNumber() })}
                         disabled={actionLoading}
+                        className="border-gray-300 dark:border-gray-700"
                       >
                         <RefreshCw className="w-4 h-4" />
                       </Button>
@@ -248,66 +225,65 @@ export default function CarsPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="carType">Car Type</Label>
+                      <Label htmlFor="carType" className="text-sm text-gray-700 dark:text-gray-300">
+                        Car Type
+                      </Label>
                       <Input
                         id="carType"
                         value={formData.carType}
-                        onChange={(e) =>
-                          setFormData({ ...formData, carType: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, carType: e.target.value })}
                         disabled={actionLoading}
+                        className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="carSize">Car Size</Label>
+                      <Label htmlFor="carSize" className="text-sm text-gray-700 dark:text-gray-300">
+                        Car Size
+                      </Label>
                       <Input
                         id="carSize"
                         value={formData.carSize}
-                        onChange={(e) =>
-                          setFormData({ ...formData, carSize: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, carSize: e.target.value })}
                         disabled={actionLoading}
+                        className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="driverName">Driver Name</Label>
+                    <Label htmlFor="driverName" className="text-sm text-gray-700 dark:text-gray-300">
+                      Driver Name
+                    </Label>
                     <Input
                       id="driverName"
                       value={formData.driverName}
-                      onChange={(e) =>
-                        setFormData({ ...formData, driverName: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, driverName: e.target.value })}
                       disabled={actionLoading}
+                      className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phoneNumber">Phone Number</Label>
+                    <Label htmlFor="phoneNumber" className="text-sm text-gray-700 dark:text-gray-300">
+                      Phone Number
+                    </Label>
                     <Input
                       id="phoneNumber"
                       value={formData.phoneNumber}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          phoneNumber: e.target.value,
-                        })
-                      }
+                      onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                       disabled={actionLoading}
+                      className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="image">Car Image</Label>
+                    <Label htmlFor="image" className="text-sm text-gray-700 dark:text-gray-300">
+                      Car Image
+                    </Label>
                     <Input
                       id="image"
                       type="file"
                       accept="image/*"
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          image: e.target.files?.[0] || null,
-                        })
-                      }
+                      onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
                       disabled={actionLoading}
+                      className="border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-white bg-white dark:bg-black"
                     />
                   </div>
                   <div className="flex justify-end space-x-2">
@@ -316,20 +292,19 @@ export default function CarsPage() {
                       variant="outline"
                       onClick={() => setDialogOpen(false)}
                       disabled={actionLoading}
+                      className="border-gray-300 dark:border-gray-700"
                     >
                       Cancel
                     </Button>
                     <Button
                       type="submit"
                       disabled={actionLoading}
-                      className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                      className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black"
                     >
                       {actionLoading ? (
                         <div className="flex items-center space-x-2">
                           <LoadingSpinner size="sm" />
-                          <span>
-                            {editingCar ? "Updating..." : "Adding..."}
-                          </span>
+                          <span>{editingCar ? "Updating..." : "Adding..."}</span>
                         </div>
                       ) : editingCar ? (
                         "Update Car"
@@ -345,18 +320,16 @@ export default function CarsPage() {
 
           <LoadingOverlay loading={loading}>
             {cars.length === 0 ? (
-              <Card className="border-0 shadow-lg">
+              <Card className="border border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-black">
                 <CardContent className="flex flex-col items-center justify-center py-16">
                   <Car className="w-16 h-16 text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    No cars registered
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
+                  <h3 className="text-xl font-semibold text-black dark:text-white mb-2">No cars registered</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
                     Start by adding your first car to the system
                   </p>
                   <Button
                     onClick={() => setDialogOpen(true)}
-                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                    className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Your First Car
@@ -368,11 +341,11 @@ export default function CarsPage() {
                 {cars.map((car) => (
                   <Card
                     key={car._id}
-                    className="border-0 shadow-lg hover:shadow-xl transition-shadow"
+                    className="border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-black"
                   >
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
+                        <CardTitle className="text-lg font-bold text-black dark:text-white">
                           {car.plateNumber}
                         </CardTitle>
                         <div className="flex space-x-2">
@@ -399,8 +372,7 @@ export default function CarsPage() {
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Delete Car</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Are you sure you want to delete this car? This
-                                  action cannot be undone.
+                                  Are you sure you want to delete this car? This action cannot be undone.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
@@ -416,20 +388,14 @@ export default function CarsPage() {
                           </AlertDialog>
                         </div>
                       </div>
-                      <CardDescription>
-                        Registered on{" "}
-                        {new Date(car.createdAt).toLocaleDateString()}
-                      </CardDescription>
+                      <CardDescription>Registered on {new Date(car.createdAt).toLocaleDateString()}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       {car.image && (
                         <div className="mb-4 rounded-lg overflow-hidden">
                           <Image
                             src={`${
-                              process.env.NEXT_PUBLIC_API_URL?.replace(
-                                "/api",
-                                ""
-                              ) || "http://localhost:5000"
+                              process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:5000"
                             }${car.image}`}
                             alt={car.plateNumber}
                             width={300}
@@ -441,12 +407,10 @@ export default function CarsPage() {
                       <div className="space-y-3">
                         {car.carType && (
                           <div className="flex items-center space-x-2">
-                            <Car className="w-4 h-4 text-blue-600" />
-                            <span className="text-sm text-gray-600 dark:text-gray-300">
-                              {car.carType}
-                            </span>
+                            <Car className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                            <span className="text-sm text-gray-600 dark:text-gray-400">{car.carType}</span>
                             {car.carSize && (
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge className="text-xs bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
                                 {car.carSize}
                               </Badge>
                             )}
@@ -454,18 +418,14 @@ export default function CarsPage() {
                         )}
                         {car.driverName && (
                           <div className="flex items-center space-x-2">
-                            <User className="w-4 h-4 text-green-600" />
-                            <span className="text-sm text-gray-600 dark:text-gray-300">
-                              {car.driverName}
-                            </span>
+                            <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                            <span className="text-sm text-gray-600 dark:text-gray-400">{car.driverName}</span>
                           </div>
                         )}
                         {car.phoneNumber && (
                           <div className="flex items-center space-x-2">
-                            <Phone className="w-4 h-4 text-purple-600" />
-                            <span className="text-sm text-gray-600 dark:text-gray-300">
-                              {car.phoneNumber}
-                            </span>
+                            <Phone className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                            <span className="text-sm text-gray-600 dark:text-gray-400">{car.phoneNumber}</span>
                           </div>
                         )}
                       </div>
@@ -478,5 +438,5 @@ export default function CarsPage() {
         </div>
       </DashboardLayout>
     </AuthGuard>
-  );
+  )
 }
