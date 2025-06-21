@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Car, Eye, EyeOff, CheckCircle } from "lucide-react"
 import Link from "next/link"
+import { signInWithGoogle, initializeGoogleAuth } from "@/lib/google-auth"
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("")
@@ -20,6 +21,10 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const { register, googleLogin, loading } = useAuth()
+
+  useEffect(() => {
+    initializeGoogleAuth().catch(console.error)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,10 +49,10 @@ export default function RegisterPage() {
 
   const handleGoogleLogin = async () => {
     try {
-      const mockCredential = "mock-google-token"
-      await googleLogin(mockCredential)
+      const accessToken = await signInWithGoogle()
+      await googleLogin(accessToken)
     } catch (err: any) {
-      setError(err.message)
+      setError(err.message || "Google login failed")
     }
   }
 

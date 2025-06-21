@@ -19,6 +19,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -125,7 +126,24 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <Menu className="w-5 h-5" />
           </Button>
 
-          <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+          {/* Navigation breadcrumb */}
+          <div className="flex flex-1 items-center gap-x-4 self-stretch lg:gap-x-6">
+            <nav className="hidden md:flex items-center space-x-4 text-sm">
+              <Link
+                href="/dashboard"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                Dashboard
+              </Link>
+              {pathname !== "/dashboard" && (
+                <>
+                  <span className="text-gray-300 dark:text-gray-600">/</span>
+                  <span className="text-gray-900 dark:text-white capitalize">
+                    {pathname.split("/").pop()?.replace("-", " ")}
+                  </span>
+                </>
+              )}
+            </nav>
             <div className="flex flex-1" />
             <div className="flex items-center gap-x-4 lg:gap-x-6">
               <ModeToggle />
@@ -135,7 +153,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user?.profileImage || "/placeholder.svg"} alt={user?.username} />
-                      <AvatarFallback>{user?.username?.charAt(0).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
+                        {user?.username?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
@@ -144,6 +164,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">{user?.fullName || user?.username}</p>
                       <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Badge variant={user?.role === "admin" ? "default" : "secondary"} className="text-xs">
+                          {user?.role === "admin" ? "Admin" : "User"}
+                        </Badge>
+                      </div>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -153,8 +178,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                       <span>Profile Settings</span>
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/activity">
+                      <Activity className="mr-2 h-4 w-4" />
+                      <span>Activity Log</span>
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>
+                  <DropdownMenuItem onClick={logout} className="text-red-600 dark:text-red-400">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
