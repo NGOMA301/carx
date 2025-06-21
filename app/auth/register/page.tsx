@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Car, Eye, EyeOff, CheckCircle } from "lucide-react"
 import Link from "next/link"
-import { signInWithGoogle, initializeGoogleAuth } from "@/lib/google-auth"
+import { signInWithGoogle } from "@/lib/google-auth"
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("")

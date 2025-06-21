@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Car, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
-import { signInWithGoogle, initializeGoogleAuth } from "@/lib/google-auth"
+import { initializeGoogleAuth, signInWithGoogle } from "@/lib/google-auth"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -21,9 +21,9 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const { login, googleLogin, loading } = useAuth()
 
-  // useEffect(() => {
-  //   initializeGoogleAuth().catch(console.error)
-  // }, [])
+  useEffect(() => {
+    initializeGoogleAuth().catch(console.error)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,6 +42,7 @@ export default function LoginPage() {
       await googleLogin(accessToken)
     } catch (err: any) {
       setError(err.message || "Google login failed")
+      console.log(err)
     }
   }
 
