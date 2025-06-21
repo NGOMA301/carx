@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,7 +12,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Car, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
-import { signInWithGoogle, initializeGoogleAuth } from "@/lib/google-auth"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -20,10 +19,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const { login, googleLogin, loading } = useAuth()
-
-  useEffect(() => {
-    initializeGoogleAuth().catch(console.error)
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,11 +32,14 @@ export default function LoginPage() {
   }
 
   const handleGoogleLogin = async () => {
+    // This would integrate with Google OAuth
+    // For demo purposes, we'll simulate it
     try {
-      const accessToken = await signInWithGoogle()
-      await googleLogin(accessToken)
+      // In real implementation, you'd get the credential from Google OAuth
+      const mockCredential = "mock-google-token"
+      await googleLogin(mockCredential)
     } catch (err: any) {
-      setError(err.message || "Google login failed")
+      setError(err.message)
     }
   }
 
