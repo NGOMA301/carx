@@ -6,30 +6,30 @@ declare global {
   }
 }
 
-export const initializeGoogleAuth = () => {
-  return new Promise((resolve, reject) => {
-    if (typeof window === "undefined") {
-      reject("Window is undefined")
-      return
-    }
+// export const initializeGoogleAuth = () => {
+//   return new Promise((resolve, reject) => {
+//     if (typeof window === "undefined") {
+//       reject("Window is undefined")
+//       return
+//     }
 
-    // Load Google Identity Services script
-    const script = document.createElement("script")
-    script.src = "https://accounts.google.com/gsi/client"
-    script.async = true
-    script.defer = true
-    script.onload = () => {
-      if (window.google) {
-        window.google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-          callback: resolve,
-        })
-      }
-    }
-    script.onerror = reject
-    document.head.appendChild(script)
-  })
-}
+//     // Load Google Identity Services script
+//     const script = document.createElement("script")
+//     script.src = "https://accounts.google.com/gsi/client"
+//     script.async = true
+//     script.defer = true
+//     script.onload = () => {
+//       if (window.google) {
+//         window.google.accounts.id.initialize({
+//           client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+//           callback: resolve,
+//         })
+//       }
+//     }
+//     script.onerror = reject
+//     document.head.appendChild(script)
+//   })
+// }
 
 export const signInWithGoogle = (): Promise<string> => {
   return new Promise((resolve, reject) => {

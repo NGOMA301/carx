@@ -33,6 +33,8 @@ import {
 import { CreditCard, Plus, Trash2, Download, Hash, RefreshCw, Car, Package } from "lucide-react"
 import axios from "axios"
 import { useToast } from "@/hooks/use-toast"
+import Footer from "@/components/footer"
+import { AuthGuard } from "@/components/auth-guard"
 
 interface PaymentData {
   _id: string
@@ -232,6 +234,7 @@ export default function PaymentsPage() {
   }
 
   return (
+    <AuthGuard requireAuth>
     <DashboardLayout>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
@@ -299,10 +302,10 @@ export default function PaymentsPage() {
                         <SelectItem key={service._id} value={service._id}>
                           <div className="flex flex-col">
                             <span className="font-medium">
-                              {service.car.plateNumber} - {service.package.packageName}
+                              {service?.car?.plateNumber} - {service?.package?.packageName}
                             </span>
                             <span className="text-sm text-gray-500">
-                              {service.recordNumber} - {service.package.packagePrice.toLocaleString()} RWF
+                              {service?.recordNumber} - {service.package?.packagePrice?.toLocaleString()} RWF
                             </span>
                           </div>
                         </SelectItem>
@@ -512,5 +515,7 @@ export default function PaymentsPage() {
         </LoadingOverlay>
       </div>
     </DashboardLayout>
+    </AuthGuard>
+
   )
 }

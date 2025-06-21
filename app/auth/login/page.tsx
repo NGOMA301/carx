@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Car, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
-import { signInWithGoogle, initializeGoogleAuth } from "@/lib/google-auth"
+import { signInWithGoogle } from "@/lib/google-auth"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -21,9 +21,6 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const { login, googleLogin, loading } = useAuth()
 
-  useEffect(() => {
-    initializeGoogleAuth().catch(console.error)
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,7 +43,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
@@ -61,7 +58,7 @@ export default function LoginPage() {
           <p className="text-gray-600 dark:text-gray-300">Sign in to your account</p>
         </div>
 
-        <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-md dark:bg-gray-800/80">
+        <Card className="border shadow-xl bg-white/80 backdrop-blur-md dark:bg-neutral-950">
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>Enter your credentials to access your account</CardDescription>
@@ -83,7 +80,7 @@ export default function LoginPage() {
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   disabled={loading}
-                  className="bg-white/50 dark:bg-gray-700/50"
+                  className="bg-white/50 dark:bg-neutral-950 border"
                 />
               </div>
 
@@ -97,7 +94,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={loading}
-                    className="bg-white/50 dark:bg-gray-700/50 pr-10"
+                    className="bg-white/50 dark:bg-neutral-950 border pr-10"
                   />
                   <button
                     type="button"
@@ -138,7 +135,7 @@ export default function LoginPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full mt-4 bg-white/50 dark:bg-gray-700/50"
+                className="w-full mt-4 bg-white/50 dark:bg-neutral-950 border"
                 onClick={handleGoogleLogin}
                 disabled={loading}
               >

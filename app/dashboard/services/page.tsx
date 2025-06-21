@@ -33,6 +33,8 @@ import { Calendar, Plus, Edit, Trash2, Car, Package, Hash, RefreshCw, User } fro
 import axios from "axios"
 import { useToast } from "@/hooks/use-toast"
 import { Input } from "@/components/ui/input"
+import Footer from "@/components/footer"
+import { AuthGuard } from "@/components/auth-guard"
 
 interface ServiceData {
   _id: string
@@ -202,7 +204,8 @@ export default function ServicesPage() {
   }
 
   return (
-    <DashboardLayout>
+    <AuthGuard requireAuth>
+<DashboardLayout>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -357,7 +360,7 @@ export default function ServicesPage() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
-                        {service.car.plateNumber}
+                        {service?.car?.plateNumber}
                       </CardTitle>
                       <div className="flex space-x-2">
                         <Button
@@ -410,12 +413,12 @@ export default function ServicesPage() {
                       <div className="flex items-center space-x-2">
                         <Car className="w-4 h-4 text-blue-600" />
                         <span className="text-sm text-gray-600 dark:text-gray-300">
-                          {service.car.carType} - {service.car.driverName}
+                          {service?.car?.carType} - {service?.car?.driverName}
                         </span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Package className="w-4 h-4 text-purple-600" />
-                        <span className="text-sm text-gray-600 dark:text-gray-300">{service.package.packageName}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-300">{service?.package?.packageName}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <User className="w-4 h-4 text-orange-600" />
@@ -426,7 +429,7 @@ export default function ServicesPage() {
                           Completed
                         </Badge>
                         <span className="text-lg font-bold text-green-600">
-                          {service.package.packagePrice.toLocaleString()} RWF
+                          {service?.package?.packagePrice.toLocaleString()} RWF
                         </span>
                       </div>
                     </div>
@@ -438,5 +441,7 @@ export default function ServicesPage() {
         </LoadingOverlay>
       </div>
     </DashboardLayout>
+    </AuthGuard>
+    
   )
 }

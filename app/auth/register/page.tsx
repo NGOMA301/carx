@@ -59,7 +59,7 @@ export default function RegisterPage() {
   const passwordStrength = password.length >= 6 ? "strong" : password.length >= 3 ? "medium" : "weak"
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
@@ -74,7 +74,7 @@ export default function RegisterPage() {
           <p className="text-gray-600 dark:text-gray-300">Join CaX for premium car care</p>
         </div>
 
-        <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-md dark:bg-gray-800/80">
+        <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-md dark:bg-neutral-950">
           <CardHeader>
             <CardTitle>Sign Up</CardTitle>
             <CardDescription>Create your account to get started</CardDescription>
@@ -96,7 +96,7 @@ export default function RegisterPage() {
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   disabled={loading}
-                  className="bg-white/50 dark:bg-gray-700/50"
+                  className="bg-white/50 dark:bg-neutral-950 border"
                 />
               </div>
 
@@ -110,7 +110,7 @@ export default function RegisterPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={loading}
-                    className="bg-white/50 dark:bg-gray-700/50 pr-10"
+                    className="bg-white/50 dark:bg-neutral-950 border pr-10"
                   />
                   <button
                     type="button"
@@ -156,7 +156,7 @@ export default function RegisterPage() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     disabled={loading}
-                    className="bg-white/50 dark:bg-gray-700/50 pr-10"
+                    className="bg-white/50 dark:bg-neutral-950 border pr-10"
                   />
                   {confirmPassword && password === confirmPassword && (
                     <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-green-500" />
@@ -193,7 +193,7 @@ export default function RegisterPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full mt-4 bg-white/50 dark:bg-gray-700/50"
+                className="w-full mt-4 bg-white/50 dark:bg-neutral-950 border"
                 onClick={handleGoogleLogin}
                 disabled={loading}
               >

@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useAuth } from "@/contexts/auth-context"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAuth } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { ModeToggle } from "@/components/mode-toggle"
+} from "@/components/ui/dropdown-menu";
+import { ModeToggle } from "@/components/mode-toggle";
 import {
   Car,
   Package,
@@ -27,12 +27,13 @@ import {
   Calendar,
   Home,
   TrendingUp,
-} from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useState } from "react"
-import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
+  Shield,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -42,23 +43,34 @@ const navigation = [
   { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
   { name: "Reports", href: "/dashboard/reports", icon: TrendingUp },
   { name: "Activity", href: "/dashboard/activity", icon: Activity },
-]
+];
 
-const adminNavigation = [{ name: "Users", href: "/dashboard/admin/users", icon: Users }]
+const adminNavigation = [
+  { name: "Users", href: "/dashboard/admin/users", icon: Users },
+];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth()
-  const pathname = usePathname()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user, logout, sessions } = useAuth();
+  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const allNavigation = user?.role === "admin" ? [...navigation, ...adminNavigation] : navigation
+  const allNavigation =
+    user?.role === "admin" ? [...navigation, ...adminNavigation] : navigation;
 
   return (
     <div className="min-h-screen gradient-bg">
       {/* Mobile sidebar */}
-      <div className={cn("fixed inset-0 z-50 lg:hidden", sidebarOpen ? "block" : "hidden")}>
-        <div className="fixed inset-0 bg-black/20" onClick={() => setSidebarOpen(false)} />
-        <div className="fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-xl">
+      <div
+        className={cn(
+          "fixed inset-0 z-50 lg:hidden",
+          sidebarOpen ? "block" : "hidden"
+        )}
+      >
+        <div
+          className="fixed inset-0 bg-black/20"
+          onClick={() => setSidebarOpen(false)}
+        />
+        <div className="fixed left-0 top-0 h-full w-64 bg-white dark:bg-neutral-950 shadow-xl border">
           <div className="flex h-16 items-center justify-between px-4 border-b">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
@@ -68,7 +80,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 CaX
               </span>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(false)}
+            >
               <X className="w-5 h-5" />
             </Button>
           </div>
@@ -82,7 +98,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                       "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                       pathname === item.href
                         ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700",
+                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     )}
                     onClick={() => setSidebarOpen(false)}
                   >
@@ -119,7 +135,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                       "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                       pathname === item.href
                         ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700",
+                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     )}
                   >
                     <item.icon className="w-5 h-5" />
@@ -136,7 +152,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <div className="lg:pl-64">
         {/* Top bar */}
         <div className="sticky top-0 z-40 flex h-16 items-center gap-x-4 border-b bg-white/80 dark:bg-neutral-950 backdrop-blur-md px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-          <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="lg:hidden"
+            onClick={() => setSidebarOpen(true)}
+          >
             <Menu className="w-5 h-5" />
           </Button>
 
@@ -164,9 +185,22 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.profileImage || "/placeholder.svg"} alt={user?.username} />
+                      <AvatarImage
+                        src={
+                          user?.profileImage
+                            ? user.profileImage.startsWith("http")
+                              ? user.profileImage
+                              : `${process.env.NEXT_PUBLIC_API_URI}${user.profileImage}`
+                            : "/placeholder.svg"
+                        }
+                        alt={user?.username}
+                        className="object-cover"
+                      />
                       <AvatarFallback className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
                         {user?.username?.charAt(0).toUpperCase()}
                       </AvatarFallback>
@@ -176,12 +210,26 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user?.fullName || user?.username}</p>
-                      <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                      <p className="text-sm font-medium leading-none">
+                        {user?.fullName || user?.username}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user?.email}
+                      </p>
                       <div className="flex items-center space-x-2 mt-2">
-                        <Badge variant={user?.role === "admin" ? "default" : "secondary"} className="text-xs mt-2">
+                        <Badge
+                          variant={
+                            user?.role === "admin" ? "default" : "secondary"
+                          }
+                          className="text-xs"
+                        >
                           {user?.role === "admin" ? "Admin" : "User"}
                         </Badge>
+                        {user?.provider === "google" && (
+                          <Badge variant="outline" className="text-xs">
+                            Google
+                          </Badge>
+                        )}
                       </div>
                     </div>
                   </DropdownMenuLabel>
@@ -193,13 +241,22 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/dashboard/sessions">
+                      <Shield className="mr-2 h-4 w-4" />
+                      <span>Sessions ({sessions.length})</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/dashboard/activity">
                       <Activity className="mr-2 h-4 w-4" />
                       <span>Activity Log</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="text-red-600 dark:text-red-400">
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="text-red-600 dark:text-red-400"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -213,5 +270,5 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <main className="py-8">{children}</main>
       </div>
     </div>
-  )
+  );
 }
