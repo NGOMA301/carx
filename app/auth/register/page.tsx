@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Car, Eye, EyeOff, CheckCircle } from "lucide-react"
 import Link from "next/link"
-import { signInWithGoogle, initializeGoogleAuth } from "@/lib/google-auth"
+import { signInWithGoogle } from "@/lib/google-auth"
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("")
@@ -22,9 +22,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const { register, googleLogin, loading } = useAuth()
 
-  useEffect(() => {
-    initializeGoogleAuth().catch(console.error)
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
