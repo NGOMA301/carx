@@ -84,6 +84,7 @@ export default function PaymentsPage() {
     servicePackage: "",
   })
   const { toast } = useToast()
+  const [generatingInvoice, setGeneratingInvoice] = useState<string | null>(null)
 
   useEffect(() => {
     fetchData()
@@ -167,6 +168,10 @@ export default function PaymentsPage() {
 
   const handleDownloadInvoice = async (paymentId: string) => {
     try {
+      setGeneratingInvoice(paymentId)
+      // Simulate invoice generation delay
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
       const response = await axios.get(`/payment/${paymentId}/invoice`, {
         responseType: "blob",
       })
@@ -190,6 +195,8 @@ export default function PaymentsPage() {
         description: error.response?.data?.message || "Failed to download invoice",
         variant: "destructive",
       })
+    } finally {
+      setGeneratingInvoice(null)
     }
   }
 
@@ -422,9 +429,13 @@ export default function PaymentsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDownloadInvoice(payment._id)}
-                          disabled={actionLoading}
+                          disabled={generatingInvoice === payment._id}
                         >
-                          <Download className="w-4 h-4" />
+                          {generatingInvoice === payment._id ? (
+                            <LoadingSpinner size="sm" />
+                          ) : (
+                            <Download className="w-4 h-4" />
+                          )}
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>

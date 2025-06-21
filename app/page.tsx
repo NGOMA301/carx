@@ -6,6 +6,7 @@ import Link from "next/link"
 
 export default function LandingPage() {
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-md dark:bg-gray-900/80 sticky top-0 z-50">

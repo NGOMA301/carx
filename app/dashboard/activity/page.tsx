@@ -5,9 +5,10 @@ import { DashboardLayout } from "@/components/dashboard-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { LoadingOverlay } from "@/components/loading-spinner"
-import { Activity, Car, Package, CreditCard, Calendar } from "lucide-react"
+import { Activity, Car, Package, CreditCard, Calendar, ChevronLeft, ChevronRight } from "lucide-react"
 import axios from "axios"
 import { useToast } from "@/hooks/use-toast"
+import { Button } from "@/components/ui/button"
 
 interface ActivityData {
   _id: string
@@ -21,6 +22,9 @@ export default function ActivityPage() {
   const [activities, setActivities] = useState<ActivityData[]>([])
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(10)
 
   useEffect(() => {
     fetchActivities()
@@ -70,6 +74,11 @@ export default function ActivityPage() {
     }
   }
 
+  const totalPages = Math.ceil(activities.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentActivities = activities.slice(startIndex, endIndex)
+
   return (
     <DashboardLayout>
       <div className="container mx-auto px-4">
@@ -100,7 +109,7 @@ export default function ActivityPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {activities.map((activity) => (
+                  {currentActivities.map((activity) => (
                     <div
                       key={activity._id}
                       className="flex items-center space-x-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -120,6 +129,47 @@ export default function ActivityPage() {
             </Card>
           )}
         </LoadingOverlay>
+        {/* Pagination */}
+        {activities.length > itemsPerPage && (
+          <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
+            <p className="text-sm hidden md:block text-muted-foreground">
+              Showing {startIndex + 1} to {Math.min(endIndex, activities.length)} of {activities.length} activities
+            </p>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </Button>
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentPage(page)}
+                    className="w-8 h-8 p-0"
+                  >
+                    {page}
+                  </Button>
+                ))}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   )
