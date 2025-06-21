@@ -29,10 +29,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Car, Plus, Edit, Trash2, Phone, User } from "lucide-react"
+import { Car, Plus, Edit, Trash2, Phone, User, RefreshCw } from "lucide-react"
 import axios from "axios"
 import { useToast } from "@/hooks/use-toast"
 import Image from "next/image"
+import { generateRwandanPlateNumber } from "@/utils/plate-generator"
 
 interface CarData {
   _id: string
@@ -147,7 +148,7 @@ export default function CarsPage() {
 
   const resetForm = () => {
     setFormData({
-      plateNumber: "",
+      plateNumber: generateRwandanPlateNumber(),
       carType: "",
       carSize: "",
       driverName: "",
@@ -198,13 +199,25 @@ export default function CarsPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="plateNumber">Plate Number</Label>
-                  <Input
-                    id="plateNumber"
-                    value={formData.plateNumber}
-                    onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value })}
-                    required
-                    disabled={actionLoading}
-                  />
+                  <div className="flex space-x-2">
+                    <Input
+                      id="plateNumber"
+                      value={formData.plateNumber}
+                      onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value })}
+                      required
+                      disabled={actionLoading}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setFormData({ ...formData, plateNumber: generateRwandanPlateNumber() })}
+                      disabled={actionLoading}
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
