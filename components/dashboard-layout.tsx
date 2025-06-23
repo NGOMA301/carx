@@ -236,7 +236,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Page content */}
-        <main>{children}</main>
+        <main className="p-6">{children}</main>
       </div>
     </div>
   )

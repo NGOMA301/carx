@@ -1,21 +1,23 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Car, Moon, Sun, ArrowRight } from "lucide-react"
+import { Car, Moon, Sun, ArrowRight, LayoutDashboard } from "lucide-react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import { useAuth } from "@/contexts/auth-context"
 import Footer from "@/components/footer"
 
 export default function LandingPage() {
   const { theme, setTheme } = useTheme()
+  const { user, loading } = useAuth()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  if (!mounted) {
+  if (!mounted || loading) {
     return null
   }
 
@@ -42,19 +44,33 @@ export default function LandingPage() {
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
-            <Link href="/auth/login">
-              <Button
-                variant="ghost"
-                className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white"
-              >
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black">
-                Get Started
-              </Button>
-            </Link>
+
+            {user ? (
+              // Show dashboard button if user is logged in
+              <Link href="/dashboard">
+                <Button className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black">
+                  <LayoutDashboard className="w-4 h-4 mr-2" />
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              // Show sign in buttons if user is not logged in
+              <>
+                <Link href="/auth/login">
+                  <Button
+                    variant="ghost"
+                    className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -71,30 +87,72 @@ export default function LandingPage() {
 
           {/* Subtitle */}
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Professional car washing services with attention to detail. Book online and experience the difference.
+            {user
+              ? `Welcome back, ${user.fullName || user.username}! Ready to book your next car service?`
+              : "Professional car washing services with attention to detail. Book online and experience the difference."}
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
-            <Link href="/auth/register">
-              <Button
-                size="lg"
-                className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black px-8 py-3 text-base"
-              >
-                Book Now
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </Link>
-            <Link href="/auth/login">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 px-8 py-3 text-base"
-              >
-                Sign In
-              </Button>
-            </Link>
+            {user ? (
+              // Show dashboard and book service buttons if user is logged in
+              <>
+                <Link href="/dashboard">
+                  <Button
+                    size="lg"
+                    className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black px-8 py-3 text-base"
+                  >
+                    <LayoutDashboard className="mr-2 w-4 h-4" />
+                    Go to Dashboard
+                  </Button>
+                </Link>
+                <Link href="/dashboard/services">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 px-8 py-3 text-base"
+                  >
+                    Book Service
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              // Show sign up buttons if user is not logged in
+              <>
+                <Link href="/auth/register">
+                  <Button
+                    size="lg"
+                    className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black px-8 py-3 text-base"
+                  >
+                    Book Now
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+                <Link href="/auth/login">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 px-8 py-3 text-base"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
+
+          {/* User Status Indicator */}
+          {user && (
+            <div className="mb-12">
+              <div className="inline-flex items-center space-x-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-4 py-2 rounded-full border border-green-200 dark:border-green-800">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium">
+                  Logged in as {user.role === "admin" ? "Administrator" : "User"}
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Car Visual */}
           <div className="relative">
@@ -134,7 +192,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <Footer/>
+      <Footer />
     </div>
   )
 }
