@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "CaX - Premium Car Washing Services",
   description:
     "Professional car washing and detailing services with online booking and management.",
+  other: {
+    "google-site-verification": "3KCb6f0sZ-ITVHGST3QHSJrtBDedeozczJ1zBGobaLs",
+  },
 };
 
 export default function RootLayout({
